@@ -1,0 +1,23 @@
+{
+  "name": "heroku_deploy_test_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/promama/heroku_deploy_test_2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/promama/heroku_deploy_test_2/issues"
+  },
+  "homepage": "https://github.com/promama/heroku_deploy_test_2#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
