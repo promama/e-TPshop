@@ -1,9 +1,10 @@
 var User = require("../models/users")
+var Cart = require("../models/carts")
 
 //create account
 module.exports.postRegister = async(req, res) => {
     //regist with email and username
-    const { email, username } = req.body
+    const { email, username, password } = req.body
 
     //check if username is used
     const userByUsername = await User.find({ username })
@@ -23,39 +24,86 @@ module.exports.postRegister = async(req, res) => {
         })
     }
 
-    //create account with username and email
-    var user = await User.create(req.body)
-    await user.save()
+    //create account with request from body
+    try {
+        var user = await User.create(req.body)
+        await user.save()
+    } catch {
+        res.json({
+            err_location: "users.controller.js",
+            err_posistion: "postRegister",
+            id: "create account with username and email"
+        })
+    }
+
+    //create cart for new account
+    try {
+        var cart = await Cart.create({userId: user._id})
+    } catch {
+        res.json({
+            err_location: "users.controller.js",
+            err_posistion: "postRegister",
+            id: "create cart for new account"
+        })
+    }
 
     //return value
     res.status(201).json({
         success: true,
-        data: { user }
+        data: user
     })
 }
 
 //find all accounts
 module.exports.getallUser = async(req, res) => {
+    //find all accounts created
     const allUser = await User.find()
 
-    if(allUser.length) {
+    //check and return result founded
+    try {
+        //check if can find anything
+        if(allUser.length) {
+            res.json({
+                success: true,
+                data: { allUser }
+            })
+        }
+        //fail to find anyone
+        else {
+            res.json({
+                success: false,
+                data: "can't find any user"
+            })
+        }
+    } catch {
         res.json({
-            success: true,
-            data: { allUser }
-        })
-    }
-    else {
-        res.json({
-            success: false,
-            data: "can't find any user"
+            err_location: "users.controller.js",
+            err_posistion: "getallUser",
+            id: "check and return result founded"
         })
     }
 }
 
-//not completed
-module.exports.getUser = async(req, res) => {
-    const username = req.body
-    const user = await User.find({ username })
+// //not completed
+// module.exports.getUser = async(req, res) => {
+//     const { email, username } = req.body
+//     const account_username = await User.find({ username }).exec()
+//     const account_email = await User.find({ email }).exec()
 
-    return res.json(user)
-}
+//     if(account_username) {
+//         res.json({
+//             success: true,
+//             data: { account_email }
+//         })
+//     } else if (account_email) {
+//         res.json({
+//             success: true,
+//             data: { account_username }
+//         })
+//     } else {
+//         res.json({
+//             success: false,
+//             data: "no account have username or email given"
+//         })
+//     }
+// }

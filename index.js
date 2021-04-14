@@ -1,9 +1,13 @@
+//call all requirements needed to run
 const express = require('express');
 const mongoose = require('mongoose')
 const cors = require('cors')
-const userRouter = require('./routers/users.router')
 const bodyParser = require('body-parser')
 const app = express();
+
+//routers
+const userRouter = require('./routers/users.router')
+const productRouter = require('./routers/products.router')
 
 //port running in local
 const port = process.env.PORT || 3000
@@ -31,6 +35,9 @@ app.get('/', function (req, res) {
 
 //users api
 app.use('/users', userRouter)
+
+//product api
+app.use('/products', productRouter)
 
 app.listen(port, function () {
   console.log('Example app listening on port 3000!');

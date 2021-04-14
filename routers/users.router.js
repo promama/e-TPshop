@@ -4,6 +4,6 @@ var userController = require('../controllers/users.controller')
 
 router.post('/register', userController.postRegister)
 router.get('/getall', userController.getallUser)
-//router.get('/find', userController.getUser)
+//router.get('/getuser', userController.getUser)
 
 module.exports = router
