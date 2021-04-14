@@ -5,7 +5,7 @@ var Product = require("../models/products")
 //create account
 module.exports.postCreateProduct = async(req, res) => {
     //create new product
-    const { name, category, brand, description } = req.body
+    const { name, category, brand, description, price } = req.body
 
     //create product with request from body
     try {

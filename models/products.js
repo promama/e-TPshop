@@ -5,6 +5,7 @@ var productSchema = new mongoose.Schema({
     category: String,
     brand: String,
     description: String,
+    price: Number,
     create_at: Date
 })
 
