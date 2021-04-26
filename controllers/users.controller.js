@@ -1,57 +1,69 @@
 var User = require("../models/users")
 var Cart = require("../models/carts")
+const mongoose = require("mongoose")
+const bcrypt = require('bcrypt')
 
 //create account
-module.exports.postRegister = async(req, res) => {
-    //regist with email and username
-    const { email, username, password } = req.body
-
-    //check if username is used
-    const userByUsername = await User.find({ username })
-    if (userByUsername.length) {
-        return res.status(202).json({
-            success: false.valueOf,
-            msg: "Your account has beed used"
+module.exports.postRegister = (req, res) => {
+    User
+        .find({ username: req.body.username })
+        .exec()
+        .then(user => {
+            if(user.length > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: "username is existed"
+                })
+            } else {
+                bcrypt.hash(req.body.password, 10, (err, hashed) => {
+                    if (err) {
+                        return res.status(500).json({
+                            success: false,
+                            message: err
+                        })
+                    } else {
+                        const user = new User({
+                            _id: new mongoose.Types.ObjectId(),
+                            username: req.body.username,
+                            password: hashed
+                        })
+            
+                        user
+                            .save()
+                            .then(result => {
+                                console.log(result)
+                                res.status(201).json({
+                                    success: true,
+                                    message: 'create user success!'
+                                })
+                            })
+                            .catch(err => {
+                                res.status(500).json({
+                                    success: false,
+                                    message: err
+                                })
+                            })
+                    }
+                })
+            }
         })
-    }
+}
 
-    //check if email is used
-    const userByMail = await User.find({ email })
-    if (userByMail.length) {
-        return res.status(202).json({
-            success: false,
-            msg: "Your email has been used"
+module.exports.deleteUser = (req, res) => {
+    User.remove({ _id: req.params.id })
+        .exec()
+        .then(result => {
+            res.status(200).json({
+                success: true,
+                message: "user is deleted"
+            })
         })
-    }
-
-    //create account with request from body
-    try {
-        var user = await User.create(req.body)
-        await user.save()
-    } catch {
-        res.json({
-            err_location: "users.controller.js",
-            err_posistion: "postRegister",
-            id: "create account with username and email"
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: err
+            })
         })
-    }
-
-    //create cart for new account
-    try {
-        var cart = await Cart.create({userId: user._id})
-    } catch {
-        res.json({
-            err_location: "users.controller.js",
-            err_posistion: "postRegister",
-            id: "create cart for new account"
-        })
-    }
-
-    //return value
-    res.status(201).json({
-        success: true,
-        data: user
-    })
 }
 
 //find all accounts

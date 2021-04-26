@@ -8,9 +8,10 @@ const app = express();
 //routers
 const userRouter = require('./routers/users.router')
 const productRouter = require('./routers/products.router')
+const auth = require('./routers/auth')
 
 //port running in local
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 
 //enable cors, bodyparser
 app.use(cors())
@@ -38,6 +39,9 @@ app.use('/users', userRouter)
 
 //product api
 app.use('/products', productRouter)
+
+//auth api
+//app.use('/auth', auth)
 
 app.listen(port, function () {
   console.log('Example app listening on port 3000!');
