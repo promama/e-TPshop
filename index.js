@@ -1,9 +1,11 @@
 //call all requirements needed to run
-const express = require('express');
+const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const app = express();
+const app = express()
+
+require('dotenv').config()
 
 //routers
 const userRouter = require('./routers/users.router')
@@ -23,7 +25,7 @@ app.use(express.json());
 // }))
 
 //mongodb connect
-mongoose.connect('mongodb+srv://Phuc:Phuc123@cluster0.qeoyr.mongodb.net/e-tpshop?retryWrites=true&w=majority', {
+mongoose.connect(process.env.DB_CONNECTION_URL, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useFindAndModify: false,
@@ -35,10 +37,10 @@ app.get('/', function (req, res) {
 });
 
 //users api
-app.use('/users', userRouter)
+app.use('/user', userRouter)
 
 //product api
-app.use('/products', productRouter)
+app.use('/product', productRouter)
 
 //auth api
 //app.use('/auth', auth)

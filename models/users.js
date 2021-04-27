@@ -9,7 +9,7 @@ var userSchema = new mongoose.Schema({
     },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    status: { type: String, required: true, default: "open" },     //active, suspen, banned,...
+    status: { type: String, required: true, default: "active" },     //active, suspen, banned,...
     privilege: { type: String, required: true, default: "common" },
     facebookId: { type: String, unique: true },
     googleId: { type: String, unique: true },

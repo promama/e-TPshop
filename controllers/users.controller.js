@@ -67,55 +67,55 @@ module.exports.deleteUser = (req, res) => {
 }
 
 //find all accounts
-module.exports.getallUser = async(req, res) => {
-    //find all accounts created
-    const allUser = await User.find()
-
-    //check and return result founded
-    try {
-        //check if can find anything
-        if(allUser.length) {
-            res.json({
-                success: true,
-                data: { allUser }
-            })
-        }
-        //fail to find anyone
-        else {
+module.exports.getallUser = (req, res) => {
+    User
+        .find()
+        .exec()
+        .then(users => {
+            if(users.length == 0) {
+                res.json({
+                    success: false,
+                    message: "can't find any user"
+                })
+            } else {
+                res.json({
+                    success: true,
+                    data: users
+                })
+            }
+        })
+        .catch(err => {
             res.json({
                 success: false,
-                data: "can't find any user"
+                message: err
             })
+        })
+}
+
+module.exports.postlogin = async (req, res) => {
+    const user = await User.find({ username: req.body.username }).exec()
+
+    try {
+        if(user.length == 0) {
+            console.log("no user founded")
+        } else {
+            console.log(user.length)
         }
     } catch {
         res.json({
-            err_location: "users.controller.js",
-            err_posistion: "getallUser",
-            id: "check and return result founded"
+            success: false
+        })
+    }
+
+    if(checking = await bcrypt.compare(req.body.password, user[0].password)) {
+        res.json({
+            success: true,
+            message: "user authorized"
+        })
+    } else {
+        res.json({
+            success: false,
+            message: "user not authorized"
         })
     }
 }
-
-// //not completed
-// module.exports.getUser = async(req, res) => {
-//     const { email, username } = req.body
-//     const account_username = await User.find({ username }).exec()
-//     const account_email = await User.find({ email }).exec()
-
-//     if(account_username) {
-//         res.json({
-//             success: true,
-//             data: { account_email }
-//         })
-//     } else if (account_email) {
-//         res.json({
-//             success: true,
-//             data: { account_username }
-//         })
-//     } else {
-//         res.json({
-//             success: false,
-//             data: "no account have username or email given"
-//         })
-//     }
-// }
