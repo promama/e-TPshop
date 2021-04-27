@@ -1,7 +1,12 @@
-var User = require("../models/users")
-var Cart = require("../models/carts")
+require('dotenv').config()
+
+const User = require("../models/users")
+const Cart = require("../models/carts")
 const mongoose = require("mongoose")
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+const authController = require('./auth.controller')
 
 //create account
 module.exports.postRegister = (req, res) => {
@@ -99,7 +104,7 @@ module.exports.postlogin = async (req, res) => {
         if(user.length == 0) {
             console.log("no user founded")
         } else {
-            console.log(user.length)
+            console.log(`found ${user.length} user`)
         }
     } catch {
         res.json({
@@ -118,4 +123,29 @@ module.exports.postlogin = async (req, res) => {
             message: "user not authorized"
         })
     }
+
+    //create token
+    const target = { name: user.username, role: user.privilege, status: user.status }
+
+    const access_token = jwt.sign(target, process.env.ACCESS_TOKEN_SECRET)
+    console.log(access_token)
+}
+
+//not finished
+module.exports.postUpdate = async (req, res) => {
+    const user = await User.find({ username: req.body.username }).exec()
+
+    //username from body
+    console.log(req.body.username)
+    //time token created
+    console.log(req.user)
+
+    if(user.length == 0) {
+        console.log('no user founded')
+    } else {
+        console.log(`found ${user.length} user`)
+        console.log(user)
+    }
+
+    //console.log(req.user)
 }
