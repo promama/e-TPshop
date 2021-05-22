@@ -6,7 +6,7 @@ var authController = require('../controllers/auth.controller')
 router.post('/register', userController.postRegister)
 router.get('/getall', userController.getallUser)
 router.post('/login', userController.postlogin)
-router.post('/', (req, res) => {
+router.get('/', (req, res) => {
     res.send("user api")
 })
 
