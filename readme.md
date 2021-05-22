@@ -27,7 +27,7 @@ search theo tỉnh
 thanh toán, hoá đơn
 
 chi tiết sản phẩm
-    hình( dùng gridfs)
+    hình( dùng cloudinary)
     giá
     thông số kỹ thuật
     giới thiệu sản phẩm chi tiết
