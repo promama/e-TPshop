@@ -73,28 +73,27 @@ module.exports.deleteUser = (req, res) => {
 
 //find all accounts
 module.exports.getallUser = (req, res) => {
-    User
-        .find()
-        .exec()
-        .then(users => {
-            if(users.length == 0) {
-                res.json({
-                    success: false,
-                    message: "can't find any user"
-                })
-            } else {
-                res.json({
-                    success: true,
-                    data: users
-                })
-            }
-        })
-        .catch(err => {
+    User.find()
+    .exec()
+    .then(users => {
+        if(users.length == 0) {
             res.json({
                 success: false,
-                message: err
+                message: "can't find any user"
             })
+        } else {
+            res.json({
+                success: true,
+                data: users
+            })
+        }
+    })
+    .catch(err => {
+        res.json({
+            success: false,
+            message: err
         })
+    })
 }
 
 module.exports.postlogin = async (req, res) => {
