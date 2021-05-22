@@ -5,10 +5,10 @@ var authController = require('../controllers/auth.controller')
 
 router.post('/register', userController.postRegister)
 router.get('/getall', userController.getallUser)
-router.delete('/:id', userController.deleteUser)
 router.post('/login', userController.postlogin)
 
 router.use(authController.verifyToken)
 router.post('/update', userController.postUpdate)
+router.delete('/:id', userController.deleteUser)
 
 module.exports = router

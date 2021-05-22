@@ -1,22 +1,17 @@
 var User = require("../models/users")
 var Cart = require("../models/carts")
 var Product = require("../models/products")
+const { search } = require("../routers/products.router")
+const { where } = require("../models/products")
 
 //create account
 module.exports.postCreateProduct = async(req, res) => {
-    //create new product
-    const { name, category, brand, description, price } = req.body
-
     //create product with request from body
     try {
-        var product = await Product.create(req.body)
+        var product = await Product.create( {name: req.body.name, category: req.body.category, brand: req.body.brand, description: req.body.description, price: req.body.price})
         await product.save()
     } catch {
-        res.json({
-            err_location: "products.controller.js",
-            err_posistion: "postCreateProduct",
-            id: "create product with request from body"
-        })
+        console.log("we have problem")
     }
 
     //return value
@@ -28,13 +23,99 @@ module.exports.postCreateProduct = async(req, res) => {
 
 //find all products
 module.exports.getallProduct = async(req, res) => {
+
+    /* request from body
+    {
+        price: {
+            min: Number,
+            max: Number,
+        },
+        name: String,
+        brand: String,
+        category: String,
+    }
+    */
+
+    if (req.body.price) {
+        console.log("product exist")
+        console.log(req.body.price)
+    } else {
+        console.log("product not exist")
+    }
+
+    var allProduct
+
+    if (req.body.name) {
+        if (req.body.price) {
+            if (req.body.price.min && !req.body.price.max) {
+                allProduct = await Product.find()
+                .where('name').equals(req.body.name)
+                .where('price').gte(req.body.price.min)
+                .exec()
+            } else if (req.body.price.max && !req.body.price.min) {
+                allProduct = await Product.find()
+                .where('name').equals(req.body.name)
+                .where('price').lte(req.body.price.max)
+                .exec()
+            } else if (req.body.price.max && req.body.price.min){
+                allProduct = await Product.find()
+                .where('name').equals(req.body.name)
+                .where('price').lte(req.body.price.max).gte(req.body.price.min)
+                .exec()
+            } else {
+                allProd = await Product.find()
+                .where('name').equals(req.body.name)
+                .exec()
+            }
+        } else {
+            allProduct = await Product.find()
+            .where('name').equals(req.body.name)
+            .exec()
+        }
+    } else {
+        if (req.body.price) {
+            if (req.body.price.min && !req.body.price.max) {
+                allProduct = await Product.find()
+                .where('price').gte(req.body.price.min)
+                .exec()
+            } else if (req.body.price.max && !req.body.price.min) {
+                allProduct = await Product.find()
+                .where('price').lte(req.body.price.max)
+                .exec()
+            } else if (req.body.price.max && req.body.price.min){
+                allProduct = await Product.find()
+                .where('price').lte(req.body.price.max).gte(req.body.price.min)
+                .exec()
+            }
+        } else {
+            allProduct = await Product.find()
+            .exec()
+        }
+    }
+
+    /* SQL quere
+        select *
+        from products
+        where name = req.body.name
+             && brand = req.body.brand
+              && category = req.body.category
+               && price > req.body.price.min
+                && price < req.body.price.max
+    */
+
+    console.log(req.body.name)
     //find all products created
-    const allProduct = await Product.find()
+    // const allProduct = await Product.find()
+    // .where('name').equals(req.body.name)
+    // .where('price').gte(req.body.price.min).lte(req.body.price.max)
+    // .where('brand').equals(req.body.brand)
+    // .where('category').equals(req.body.category)
+    // .exec()
 
     //check and return result founded
     try {
         //check if can find anything
-        if(allProduct.length) {
+        if (allProduct.length) {
             res.json({
                 success: true,
                 data: { allProduct }
@@ -44,14 +125,14 @@ module.exports.getallProduct = async(req, res) => {
         else {
             res.json({
                 success: false,
-                data: "can't find any product"
+                message: "can't find any product"
             })
         }
     } catch {
+        console.log("smth happen here")
         res.json({
-            err_location: "users.controller.js",
-            err_posistion: "getallProduct",
-            id: "check and return result founded"
+            success: false,
+            message: "error!!!"
         })
     }
 }

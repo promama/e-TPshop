@@ -13,7 +13,7 @@ var userSchema = new mongoose.Schema({
     privilege: { type: String, required: true, default: "common" },
     facebookId: { type: String, unique: true },
     googleId: { type: String, unique: true },
-    phone: {type: Number}
+    phone: { type: Number }
 })
 
 var User = mongoose.model("Users", userSchema, "users")

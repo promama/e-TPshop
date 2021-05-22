@@ -127,7 +127,7 @@ module.exports.postlogin = async (req, res) => {
     //create token
     const target = { name: user.username, role: user.privilege, status: user.status }
 
-    const access_token = jwt.sign(target, process.env.ACCESS_TOKEN_SECRET)
+    const access_token = jwt.sign(target, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "60s" })
     console.log(access_token)
 }
 
@@ -142,10 +142,16 @@ module.exports.postUpdate = async (req, res) => {
 
     if(user.length == 0) {
         console.log('no user founded')
+
+        res.json({
+            message: "fail to update user"
+        })
     } else {
         console.log(`found ${user.length} user`)
         console.log(user)
+      
+        res.json({
+            message: "success"
+        })
     }
-
-    //console.log(req.user)
 }
