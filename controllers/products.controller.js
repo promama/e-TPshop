@@ -108,6 +108,7 @@ module.exports.getallProduct = async(req, res) => {
     */
 
     console.log(req.body.name)
+    console.log(allProduct)
     //find all products created
     // const allProduct = await Product.find()
     // .where('name').equals(req.body.name)
