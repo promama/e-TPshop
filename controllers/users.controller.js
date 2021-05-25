@@ -88,7 +88,12 @@ module.exports.getallUser = (req, res) => {
             })
         }
     })
-    
+    .catch(err => {
+        res.json({
+            success: false,
+            message: err
+        })
+    })
 }
 
 module.exports.postlogin = async (req, res) => {
