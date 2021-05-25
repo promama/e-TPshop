@@ -72,8 +72,8 @@ module.exports.deleteUser = (req, res) => {
 }
 
 //find all accounts
-module.exports.getallUser = (req, res) => {
-    User.find()
+module.exports.getallUser = async (req, res) => {
+    await User.find()
     .exec()
     .then(users => {
         if(users.length == 0) {

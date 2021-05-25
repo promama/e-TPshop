@@ -43,62 +43,61 @@ module.exports.getallProduct = async(req, res) => {
         console.log("product not exist")
     }
 
-    let allProduct = await Product.find()
     
-    // let allProduct = Object()
+    let allProduct = Object()
 
-    // try {
-    //     if (req.body.name) {
-    //         if (req.body.price) {
-    //             if (req.body.price.min && !req.body.price.max) {
-    //                 allProduct = await Product.find()
-    //                 .where('name').equals(req.body.name)
-    //                 .where('price').gte(req.body.price.min)
-    //                 .exec()
-    //             } else if (req.body.price.max && !req.body.price.min) {
-    //                 allProduct = await Product.find()
-    //                 .where('name').equals(req.body.name)
-    //                 .where('price').lte(req.body.price.max)
-    //                 .exec()
-    //             } else if (!req.body.price.max && req.body.price.min){
-    //                 allProduct = await Product.find()
-    //                 .where('name').equals(req.body.name)
-    //                 .where('price').lte(req.body.price.max).gte(req.body.price.min)
-    //                 .exec()
-    //             } else {
-    //                 allProduct = await Product.find()
-    //                 .where('name').equals(req.body.name)
-    //                 .exec()
-    //             }
-    //         } else {
-    //             allProduct = await Product.find()
-    //             .where('name').equals(req.body.name)
-    //             .exec()
-    //         }
-    //     } else {
-    //         if (req.body.price) {
-    //             if (req.body.price.min && !req.body.price.max) {
-    //                 allProduct = await Product.find()
-    //                 .where('price').gte(req.body.price.min)
-    //                 .exec()
-    //             } else if (req.body.price.max && !req.body.price.min) {
-    //                 allProduct = await Product.find()
-    //                 .where('price').lte(req.body.price.max)
-    //                 .exec()
-    //             } else if (req.body.price.max && req.body.price.min){
-    //                 allProduct = await Product.find()
-    //                 .where('price').lte(req.body.price.max).gte(req.body.price.min)
-    //                 .exec()
-    //             }
-    //         } else {
-    //             allProduct = await Product.find()
-    //             .exec()
+    try {
+        if (req.body.name) {
+            if (req.body.price) {
+                if (req.body.price.min && !req.body.price.max) {
+                    allProduct = await Product.find()
+                    .where('name').equals(req.body.name)
+                    .where('price').gte(req.body.price.min)
+                    .exec()
+                } else if (req.body.price.max && !req.body.price.min) {
+                    allProduct = await Product.find()
+                    .where('name').equals(req.body.name)
+                    .where('price').lte(req.body.price.max)
+                    .exec()
+                } else if (!req.body.price.max && req.body.price.min){
+                    allProduct = await Product.find()
+                    .where('name').equals(req.body.name)
+                    .where('price').lte(req.body.price.max).gte(req.body.price.min)
+                    .exec()
+                } else {
+                    allProduct = await Product.find()
+                    .where('name').equals(req.body.name)
+                    .exec()
+                }
+            } else {
+                allProduct = await Product.find()
+                .where('name').equals(req.body.name)
+                .exec()
+            }
+        } else {
+            if (req.body.price) {
+                if (req.body.price.min && !req.body.price.max) {
+                    allProduct = await Product.find()
+                    .where('price').gte(req.body.price.min)
+                    .exec()
+                } else if (req.body.price.max && !req.body.price.min) {
+                    allProduct = await Product.find()
+                    .where('price').lte(req.body.price.max)
+                    .exec()
+                } else if (req.body.price.max && req.body.price.min){
+                    allProduct = await Product.find()
+                    .where('price').lte(req.body.price.max).gte(req.body.price.min)
+                    .exec()
+                }
+            } else {
+                allProduct = await Product.find()
+                .exec()
 
-    //         }
-    //     }
-    // } catch(err) {
-    //     console.log(err)
-    // }
+            }
+        }
+    } catch(err) {
+        console.log(err)
+    }
 
     /* SQL quere
         select *
