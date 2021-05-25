@@ -73,7 +73,13 @@ module.exports.deleteUser = (req, res) => {
 
 //find all accounts
 module.exports.getallUser = async (req, res) => {
-    const allUsers = await User.find()
+    await mongoose.connect(process.env.DB_CONNECTION_URL, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true,
+        useFindAndModify: false,
+    });
+    
+    User.find()
     .exec()
     .then(users => {
         if(users.length == 0) {
