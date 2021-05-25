@@ -43,7 +43,8 @@ module.exports.getallProduct = async(req, res) => {
         console.log("product not exist")
     }
 
-    var allProduct
+    
+    let allProduct = Object()
 
     try {
         if (req.body.name) {
