@@ -24,6 +24,8 @@ mongoose.connect(process.env.DB_CONNECTION_URL, {
     useFindAndModify: false,
 });
 
+mongoose.set('bufferCommands', false);
+
 //hello world api
 app.get('/', function (req, res) {
   res.send('Hello World!');

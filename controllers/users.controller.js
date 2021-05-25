@@ -75,36 +75,25 @@ module.exports.deleteUser = (req, res) => {
 module.exports.getallUser = async (req, res) => {
     const allUsers = await User.find()
     .exec()
-    if (allUsers.length == 0) {
+    .then(users => {
+        if(users.length == 0) {
+            res.json({
+                success: false,
+                message: "can't find any user"
+            })
+        } else {
+            res.json({
+                success: true,
+                data: users
+            })
+        }
+    })
+    .catch(err => {
         res.json({
             success: false,
-            message: "no user found"
+            message: err
         })
-    } else {
-        res.json({
-            success: true,
-            data: allUsers
-        })
-    }
-    // .then(users => {
-    //     if(users.length == 0) {
-    //         res.json({
-    //             success: false,
-    //             message: "can't find any user"
-    //         })
-    //     } else {
-    //         res.json({
-    //             success: true,
-    //             data: users
-    //         })
-    //     }
-    // })
-    // .catch(err => {
-    //     res.json({
-    //         success: false,
-    //         message: err
-    //     })
-    // })
+    })
 }
 
 module.exports.postlogin = async (req, res) => {
