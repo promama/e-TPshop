@@ -44,7 +44,7 @@ module.exports.getallProduct = async(req, res) => {
     }
 
     
-    let allProduct = Object()
+    //let allProduct = Object()
 
     try {
         if (req.body.name) {
@@ -65,7 +65,7 @@ module.exports.getallProduct = async(req, res) => {
                     .where('price').lte(req.body.price.max).gte(req.body.price.min)
                     .exec()
                 } else {
-                    allProd = await Product.find()
+                    allProduct = await Product.find()
                     .where('name').equals(req.body.name)
                     .exec()
                 }
