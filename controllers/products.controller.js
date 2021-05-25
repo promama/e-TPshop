@@ -44,7 +44,7 @@ module.exports.getallProduct = async(req, res) => {
     }
 
     
-    //let allProduct = Object()
+    let allProduct = Object()
 
     try {
         if (req.body.name) {
@@ -92,6 +92,7 @@ module.exports.getallProduct = async(req, res) => {
             } else {
                 allProduct = await Product.find()
                 .exec()
+
             }
         }
     } catch(err) {
