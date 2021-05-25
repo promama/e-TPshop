@@ -72,14 +72,7 @@ module.exports.deleteUser = (req, res) => {
 }
 
 //find all accounts
-module.exports.getallUser = async (req, res) => {
-    try {
-    await mongoose.connect(process.env.DB_CONNECTION_URL, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true,
-        useFindAndModify: false,
-    });
-
+module.exports.getallUser = (req, res) => {
     User.find()
     .exec()
     .then(users => {
@@ -94,12 +87,13 @@ module.exports.getallUser = async (req, res) => {
                 data: users
             })
         }
-    })} catch (err) {
+    })
+    .catch( err => {
         res.json({
             success: false,
-            data: err
+            message: err
         })
-    }
+    })
 }
 
 module.exports.postlogin = async (req, res) => {
@@ -134,6 +128,11 @@ module.exports.postlogin = async (req, res) => {
 
     const access_token = jwt.sign(target, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "60s" })
     console.log(access_token)
+
+    res.json({
+        success: true,
+        access_token: access_token
+    })
 }
 
 //not finished
