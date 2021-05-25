@@ -94,10 +94,10 @@ module.exports.getallUser = async (req, res) => {
                 data: users
             })
         }
-    })} catch {
+    })} catch (err) {
         res.json({
             success: false,
-            message: "error occur"
+            data: err
         })
     }
 }
