@@ -112,27 +112,22 @@ module.exports.postlogin = async (req, res) => {
     }
 
     if(checking = await bcrypt.compare(req.body.password, user[0].password)) {
+        //create token
+        const target = { name: user.username, role: user.privilege, status: user.status }
+
+        const access_token = jwt.sign(target, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "60s" })
+        console.log(access_token)
+
         res.json({
             success: true,
-            message: "user authorized"
+            access_token: access_token
         })
     } else {
         res.json({
             success: false,
-            message: "user not authorized"
+            message: "error"
         })
     }
-
-    //create token
-    const target = { name: user.username, role: user.privilege, status: user.status }
-
-    const access_token = jwt.sign(target, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "60s" })
-    console.log(access_token)
-
-    res.json({
-        success: true,
-        access_token: access_token
-    })
 }
 
 //not finished

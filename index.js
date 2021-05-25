@@ -24,8 +24,6 @@ mongoose.connect("mongodb+srv://Phuc:Phuc123@cluster0.qeoyr.mongodb.net/e-tpshop
     useFindAndModify: false,
 });
 
-mongoose.set('bufferCommands', false);
-
 //hello world api
 app.get('/', function (req, res) {
   res.send('Hello World!');
