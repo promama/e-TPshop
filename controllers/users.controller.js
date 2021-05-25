@@ -73,12 +73,13 @@ module.exports.deleteUser = (req, res) => {
 
 //find all accounts
 module.exports.getallUser = async (req, res) => {
+    try {
     await mongoose.connect(process.env.DB_CONNECTION_URL, {
         useUnifiedTopology: true,
         useNewUrlParser: true,
         useFindAndModify: false,
     });
-    
+
     User.find()
     .exec()
     .then(users => {
@@ -93,13 +94,12 @@ module.exports.getallUser = async (req, res) => {
                 data: users
             })
         }
-    })
-    .catch(err => {
+    })} catch {
         res.json({
             success: false,
-            message: err
+            message: "error occur"
         })
-    })
+    }
 }
 
 module.exports.postlogin = async (req, res) => {
