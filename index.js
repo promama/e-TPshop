@@ -18,7 +18,7 @@ app.use(cors())
 app.use(express.json());
 
 //mongodb connect
-mongoose.connect(process.env.DB_CONNECTION_URL, {
+mongoose.connect("mongodb+srv://Phuc:Phuc123@cluster0.qeoyr.mongodb.net/e-tpshop?retryWrites=true&w=majority", {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useFindAndModify: false,
