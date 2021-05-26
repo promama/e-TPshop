@@ -47,7 +47,7 @@ module.exports.getallProduct = async(req, res) => {
         if (req.body.name) {
             if (req.body.brand) {
                 if (req.body.max != null && req.body.min != null) {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max, $gte: req.body.min }}).sort([['price', 1]]).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max, $gte: req.body.min }}).exec()
                 } else if (req.body.max == null && req.body.min == null) {
                     allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }}).exec()
                 } else if (req.body.max == null) {
@@ -81,7 +81,7 @@ module.exports.getallProduct = async(req, res) => {
                 if (req.body.max != null && req.body.min != null) {
                     allProduct = await Product.find({price: { $lte: req.body.max, $gte: req.body.min }}).exec()
                 } else if (req.body.max == null && req.body.min == null) {
-                    allProduct = await Product.find().exec()
+                    allProduct = await Product.find().sort([['price', 1]]).exec()
                 } else if (req.body.max == null) {
                     allProduct = await Product.find({price: { $gte: req.body.min }}).exec()
                 } else {
