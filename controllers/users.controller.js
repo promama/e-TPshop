@@ -136,21 +136,52 @@ module.exports.postUpdate = async (req, res) => {
 
     //username from body
     console.log(req.body.username)
-    //time token created
-    console.log(req.user)
 
     if(user.length == 0) {
         console.log('no user founded')
 
         res.json({
-            message: "fail to update user"
+            message: "fail to update user, no user founded"
         })
     } else {
         console.log(`found ${user.length} user`)
         console.log(user)
       
+        const filter = { username: req.body.username}
+
+        console.log(filter)
+
+        var update = { }
+
+        if (req.body.password) {
+            await bcrypt.hash(req.body.password, 10).then((hashed) => {
+                const source = { password: hashed }
+                console.log(source)
+                Object.assign(update, source)
+            })
+        }
+
+        if (req.body.status) {
+            const source = { status: req.body.status }
+            Object.assign(update, source)
+        }
+        if (req.body.privilege) {
+            const source = { privilege: req.body.privilege }
+            Object.assign(update, source)
+        }
+        
+
+        console.log(req.body.password)
+
+        console.log(update)
+
+        const a = await User.findOneAndUpdate(filter, update).exec()
+
+        console.log(a)
+
         res.json({
-            message: "success"
+            success: true,
+            message: "update successed"
         })
     }
 }
