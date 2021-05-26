@@ -47,109 +47,51 @@ module.exports.getallProduct = async(req, res) => {
         if (req.body.name) {
             if (req.body.brand) {
                 if (req.body.max != null && req.body.min != null) {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max, $gte: req.body.min }}).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max, $gte: req.body.min }}).sort([['price', -1]]).exec()
                 } else if (req.body.max == null && req.body.min == null) {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }}).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }}).sort([['price', -1]]).exec()
                 } else if (req.body.max == null) {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }, price: { $gte: req.body.min }}).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }, price: { $gte: req.body.min }}).sort([['price', -1]]).exec()
                 } else {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max}}).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max}}).sort([['price', -1]]).exec()
                 }
             } else {
                 if (req.body.max != null && req.body.min != null) {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, price: { $lte: req.body.max, $gte: req.body.min }}).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, price: { $lte: req.body.max, $gte: req.body.min }}).sort([['price', -1]]).exec()
                 } else if (req.body.max == null && req.body.min == null) {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }}).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }}).sort([['price', -1]]).exec()
                 } else if (req.body.max == null) {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, price: { $gte: req.body.min }}).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, price: { $gte: req.body.min }}).sort([['price', -1]]).exec()
                 } else {
-                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, price: { $lte: req.body.max}}).exec()
+                    allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }, price: { $lte: req.body.max}}).sort([['price', -1]]).exec()
                 }
             }
         } else {
             if (req.body.brand) {
                 if (req.body.max != null && req.body.min != null) {
-                    allProduct = await Product.find({brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max, $gte: req.body.min }}).exec()
+                    allProduct = await Product.find({brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max, $gte: req.body.min }}).sort([['price', -1]]).exec()
                 } else if (req.body.max == null && req.body.min == null) {
-                    allProduct = await Product.find({brand: { $regex: req.body.brand, $options: "i" }}).exec()
+                    allProduct = await Product.find({brand: { $regex: req.body.brand, $options: "i" }}).sort([['price', -1]]).exec()
                 } else if (req.body.max == null) {
-                    allProduct = await Product.find({brand: { $regex: req.body.brand, $options: "i" }, price: { $gte: req.body.min }}).exec()
+                    allProduct = await Product.find({brand: { $regex: req.body.brand, $options: "i" }, price: { $gte: req.body.min }}).sort([['price', -1]]).exec()
                 } else {
-                    allProduct = await Product.find({brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max}}).exec()
+                    allProduct = await Product.find({brand: { $regex: req.body.brand, $options: "i" }, price: { $lte: req.body.max}}).sort([['price', -1]]).exec()
                 }
             } else {
                 if (req.body.max != null && req.body.min != null) {
-                    allProduct = await Product.find({price: { $lte: req.body.max, $gte: req.body.min }}).exec()
+                    allProduct = await Product.find({price: { $lte: req.body.max, $gte: req.body.min }}).sort([['price', -1]]).exec()
                 } else if (req.body.max == null && req.body.min == null) {
-                    allProduct = await Product.find().sort([['price', 1]]).exec()
+                    allProduct = await Product.find().sort([['price', -1]]).exec()
                 } else if (req.body.max == null) {
-                    allProduct = await Product.find({price: { $gte: req.body.min }}).exec()
+                    allProduct = await Product.find({price: { $gte: req.body.min }}).sort([['price', -1]]).exec()
                 } else {
-                    allProduct = await Product.find({price: { $lte: req.body.max}}).exec()
+                    allProduct = await Product.find({price: { $lte: req.body.max}}).sort([['price', -1]]).exec()
                 }
             }
         }
     } catch (err) {
         console.log(err)
     }
-
-    // try {
-    //     if (req.body.name) {
-            
-    //         if (req.body.price.max) {
-                
-    //             if (req.body.price.min && !req.body.price.max) {
-                    
-    //                 allProduct = await Product.find()
-    //                 .where('name').equals(req.body.name)
-    //                 .where('price').gte(req.body.price.min)
-    //                 .exec()
-    //             } else if (req.body.price.max && !req.body.price.min) {
-                    
-    //                 allProduct = await Product.find()
-    //                 .where('name').equals(req.body.name)
-    //                 .where('price').lte(req.body.price.max)
-    //                 .exec()
-    //             } else if (req.body.price.max && req.body.price.min){
-                    
-    //                 allProduct = await Product.find()
-    //                 .where('name').equals(req.body.name)
-    //                 .where('price').lte(req.body.price.max).gte(req.body.price.min)
-    //                 .exec()
-    //             } else {
-    //                 allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }})
-                    
-    //                 .exec()
-    //             }
-    //         } else {
-                
-    //             allProduct = await Product.find({name: { $regex: req.body.name, $options: "i" }})
-    //             .exec()
-    //         }
-    //     } else {
-            
-    //         if (req.body.price) {
-    //             if (req.body.price.min && !req.body.price.max) {
-    //                 allProduct = await Product.find()
-    //                 .where('price').gte(req.body.price.min)
-    //                 .exec()
-    //             } else if (req.body.price.max && !req.body.price.min) {
-    //                 allProduct = await Product.find()
-    //                 .where('price').lte(req.body.price.max)
-    //                 .exec()
-    //             } else if (req.body.price.max && req.body.price.min){
-    //                 allProduct = await Product.find()
-    //                 .where('price').lte(req.body.price.max).gte(req.body.price.min)
-    //                 .exec()
-    //             }
-    //         } else {
-    //             allProduct = await Product.find()
-    //             .exec()
-    //         }
-    //     }
-    // } catch(err) {
-    //     console.log(err)
-    // }
 
     /* SQL quere
         select *
