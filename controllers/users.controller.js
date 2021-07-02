@@ -32,6 +32,11 @@ module.exports.postRegister = (req, res) => {
                             username: req.body.username,
                             password: hashed
                         })
+
+                        const cart = new Cart({
+                            _id: new mongoose.Types.ObjectId(),
+                            userId: user._id
+                        })
             
                         user
                             .save()
@@ -47,6 +52,12 @@ module.exports.postRegister = (req, res) => {
                                     success: false,
                                     message: err
                                 })
+                            })
+
+                        cart
+                            .save()
+                            .then(result => {
+                                console.log(result)
                             })
                     }
                 })
@@ -104,6 +115,7 @@ module.exports.postlogin = async (req, res) => {
             console.log("no user founded")
         } else {
             console.log(`found ${user.length} user`)
+            //console.log(user)
         }
     } catch {
         res.json({
@@ -111,11 +123,14 @@ module.exports.postlogin = async (req, res) => {
         })
     }
 
-    if(checking = await bcrypt.compare(req.body.password, user[0].password)) {
-        //create token
-        const target = { name: user.username, role: user.privilege, status: user.status }
+    //console.log(user)
 
-        const access_token = jwt.sign(target, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "60s" })
+    if(checking = await bcrypt.compare(req.body.password, user[0].password)) {
+        //create token)
+        
+        console.log(user)
+
+        const access_token = jwt.sign({ username: req.body.username, _id: user[0]._id }, process.env.ACCESS_TOKEN_SECRET)//, { expiresIn: "300s" })
         console.log(access_token)
 
         res.json({

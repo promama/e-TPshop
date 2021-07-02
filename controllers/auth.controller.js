@@ -21,7 +21,13 @@ module.exports.verifyToken = (req, res, next) => {
             })
         }
 
-        req.user = user    
+        req.user = user
         next()
     })
+}
+
+module.exports.decrypt = async (token) => {
+    // return "aaas"
+    user = await jwt.decode(token, process.env.ACCESS_TOKEN_SECRET)
+    return { _id: user._id }
 }

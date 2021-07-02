@@ -7,6 +7,7 @@ var productSchema = new mongoose.Schema({
     brand: { type: String },
     description: { type: String },
     price: { type: Number, required: true },
+    remain: { type: Number, required: true, default: 0},
     create_at: { type: Date, default: Date.now }
 })
 

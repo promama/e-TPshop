@@ -9,6 +9,7 @@ require('dotenv').config()
 //routers
 const userRouter = require('./routers/users.router')
 const productRouter = require('./routers/products.router')
+const cartRouter = require('./routers/carts.router')
 
 //port running in local
 const port = process.env.PORT || 3001
@@ -34,6 +35,9 @@ app.use('/user', userRouter)
 
 //product api
 app.use('/product', productRouter)
+
+//cart api
+app.use('/cart', cartRouter)
 
 app.listen(port, function () {
   console.log('Example app listening on port 3000!');

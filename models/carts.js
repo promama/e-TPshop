@@ -7,12 +7,15 @@ var cartSchema = new mongoose.Schema({
     },
     products: [
         {
-        itemId: String,
-        quantity: Number,
-        price: Number,
-        name: String
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
+        quantity: { type: Number },
+        price: { type: Number },
+        name: { type: String, ref: "products" },
+        status: { type: String },
+        modify_date: { type: Date, default: Date.now }
         }
-    ]
+    ],
+    total: { type: Number, default: 0 }
 })
 
 var Cart = mongoose.model("Carts", cartSchema, "carts")
