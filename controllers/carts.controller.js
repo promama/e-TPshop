@@ -69,19 +69,30 @@ async function addtocart(product, userId, quantity) {
 
         var bool = false
 
-        //check duplicate product to add quantity not add more product
-        list_products.every(item => {
-            if (item.name == product.name && item.price == product.price && item.status == "waiting approve") {
+        //check duplicate product to add quantity not add more product   
+        for (let i = 0; i < list_products.length; i++) {
+            var a = new mongoose.Types.ObjectId(list_products[i]._id)
+            console.log("a: " + a)
+
+            var b = new mongoose.Types.ObjectId(product._id)
+            console.log("b: " + b)
+
+            if (a.equals(b)) {
+                console.log("equal")
+
                 filter = { userId: userId, products: { $elemMatch: { price: product.price }}}
                 console.log("filter elemMatch: %j", filter)
-                console.log("filter success")
+
                 bool = true
-                return false
+                break
             }
-        })
+        }
+
         if (bool == false) {
+            //add product
             await Cart.findOneAndUpdate(filter, { "$push": { "products": update }, "$inc": { total: total_add }})
         } else {
+            //update product with new quantity
             await Cart.findOneAndUpdate(filter, { "$inc": { total: total_add, 'products.$.quantity': quantity }})
         }
     } catch (error) {
@@ -135,5 +146,88 @@ module.exports.postAddToUserCart = async (req, res) => {
 }
 
 module.exports.postRemoveFromUserCart = async (req, res) => {
+    const authHeader = req.headers['authorization']
+    //check if it have authHeader => token = undefined or token
+    const token = authHeader && authHeader.split(' ')[1]
 
+    //console.log(token)
+    var userId = await auth.decrypt(token)
+    console.log("user id: %j", userId._id)
+
+    //request: productId, price, name, quantity
+    console.log(req.body.productId + " " + req.body.price + " " + req.body.name + " " + req.body.quantity)
+
+    //find user's cart
+    var product = await Cart.find({ userId: userId })
+    console.log(product)
+
+    //products in user's cart
+    var products_in_cart = await product[0].products
+    console.log(products_in_cart)
+    
+    var quantity = 0, price = 0
+    
+    //find product's quantity and price of product match request 
+    for (let i = 0; i < products_in_cart.length; i++) {
+        if (products_in_cart[i]._id == req.body.productId) {
+            console.log("match at: " + i)
+
+            quantity = await products_in_cart[i].quantity
+            price = await products_in_cart[i].price
+        }
+    }
+
+    console.log("quantity in cart: " + quantity)
+    console.log("price in cart:" + price)
+
+    //quantity request > quantity in cart
+    if (quantity < req.body.quantity) {
+        res.json({
+            success: false,
+            message: "not enough quantity to delete"
+        })
+    } else {
+        console.log("ready to subtract")
+
+        //precalculate quantity after subtract
+        let quantity_after = await quantity - req.body.quantity
+        console.log("quantity after subtract: " + quantity_after)
+
+        //precalculate money after subtract
+        let amount_money_after = await product[0].total - req.body.quantity * price
+        console.log("amount money after subtract: " + amount_money_after)
+
+        //check if precalculate money is negative
+        if (amount_money_after < 0) {
+            res.json({
+                success: false,
+                message: "total money is negative"
+            })
+        }
+
+        //update query
+        const update = { _id: req.body.productId , quantity: quantity_after, price: req.body.price, name: req.body.name, status: "waiting approve"}
+
+        //remove product from cart
+        await Cart.update({ userId: userId }, { $pull: { products: { _id: req.body.productId } } })
+
+        //quantity request < quantity in cart
+        if (quantity > req.body.quantity) {
+            //add product to cart and decrease total money
+            await Cart.update({ userId: userId }, { $push: { products: update }, $inc: { total: req.body.quantity * price * -1 } })
+            res.json({
+                success: true,
+                message: "decrease quantity in cart"
+            })
+        } 
+        //quantity request == quantity in cart
+        else {
+            //decrease total money
+            await Cart.update({ userId: userId }, { $inc: { total: req.body.quantity * price * -1 } })
+            res.json({
+                success: true,
+                message: "product is deleted in cart"
+            })
+        }
+    }
 }

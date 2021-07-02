@@ -27,7 +27,7 @@ mongoose.connect("mongodb+srv://Phuc:Phuc123@cluster0.qeoyr.mongodb.net/e-tpshop
 
 //hello world api
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+  res.send(process.env.ACCESS_TOKEN_SECRET);
 });
 
 //user api
