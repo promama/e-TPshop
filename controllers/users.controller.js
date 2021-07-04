@@ -148,7 +148,7 @@ module.exports.postlogin = async (req, res) => {
         
         console.log(user)
 
-        const access_token = await jwt.sign({ username: req.body.username, _id: user[0]._id, role: user[0].role }, process.env.ACCESS_TOKEN_SECRET)//, { expiresIn: "300s" })
+        const access_token = await jwt.sign({ username: req.body.username, _id: user[0]._id, role: user[0].role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "300s" })
         console.log(access_token)
 
         res.json({

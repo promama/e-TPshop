@@ -187,6 +187,10 @@ module.exports.postUpdateProduct = async(req, res) => {
         }
     } catch (err) {
         console.log(err)
+        res.json({
+            success: false,
+            message: "update product fail"
+        })
     }
     
     console.log(update)
