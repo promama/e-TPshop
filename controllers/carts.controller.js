@@ -231,3 +231,12 @@ module.exports.postRemoveFromUserCart = async (req, res) => {
         }
     }
 }
+
+module.exports.getAllCart = async (req, res) => {
+    //req.mid.role
+    if (req.mid.role == "user") {
+        var cart = Cart.find({ _id: req.mid._id })
+
+        console.log(cart)
+    }
+}

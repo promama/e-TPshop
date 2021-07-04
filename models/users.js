@@ -7,13 +7,14 @@ var userSchema = new mongoose.Schema({
         unique: true, 
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     },
-    username: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true, match: /^[a-z0-9_\.]+$/ },
     password: { type: String, required: true },
     status: { type: String, required: true, default: "active" },     //active, suspen, banned,...
     privilege: { type: String, required: true, default: "common" },
     facebookId: { type: String, unique: true },
     googleId: { type: String, unique: true },
-    phone: { type: Number }
+    phone: { type: Number },
+    role: { type: String, default: "user" }
 })
 
 var User = mongoose.model("Users", userSchema, "users")

@@ -6,7 +6,7 @@ const mongoose = require("mongoose")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const authController = require('./auth.controller')
+const auth = require('./auth.controller')
 
 //create account
 module.exports.postRegister = (req, res) => {
@@ -83,28 +83,46 @@ module.exports.deleteUser = (req, res) => {
 }
 
 //find all accounts
-module.exports.getallUser = (req, res) => {
-    User.find()
-    .exec()
-    .then(users => {
-        if(users.length == 0) {
+module.exports.getallUser = async (req, res) => {
+    const authHeader = req.headers['authorization']
+    //check if it have authHeader => token = undefined or token
+    const token = authHeader && authHeader.split(' ')[1]
+
+    var userId = new Object({ _id: '' })
+
+    //console.log(token)
+    if (token != null) {
+        userId = await auth.decrypt(token)
+    }
+
+    if (userId._id && userId._id != '') {
+        var user = await User.find({ _id: userId._id })
+        res.json({
+            success: true,
+            data: user
+        })
+    } else {
+        try {
+            var users = await User.find()
+            if(users.length == 0) {
+                res.json({
+                    success: false,
+                    message: "can't find any user"
+                })
+            } else {
+                res.json({
+                    success: true,
+                    data: users
+                })
+            }
+        } catch (err) {
             res.json({
                 success: false,
-                message: "can't find any user"
-            })
-        } else {
-            res.json({
-                success: true,
-                data: users
+                message: err
             })
         }
-    })
-    .catch( err => {
-        res.json({
-            success: false,
-            message: err
-        })
-    })
+        
+    }
 }
 
 module.exports.postlogin = async (req, res) => {
@@ -130,7 +148,7 @@ module.exports.postlogin = async (req, res) => {
         
         console.log(user)
 
-        const access_token = jwt.sign({ username: req.body.username, _id: user[0]._id }, process.env.ACCESS_TOKEN_SECRET)//, { expiresIn: "300s" })
+        const access_token = await jwt.sign({ username: req.body.username, _id: user[0]._id, role: user[0].role }, process.env.ACCESS_TOKEN_SECRET)//, { expiresIn: "300s" })
         console.log(access_token)
 
         res.json({

@@ -2,7 +2,7 @@ var User = require("../models/users")
 var Cart = require("../models/carts")
 var Product = require("../models/products")
 const { search } = require("../routers/products.router")
-const { where } = require("../models/products")
+const { where, findOneAndDelete } = require("../models/products")
 
 //create account
 module.exports.postCreateProduct = async(req, res) => {
@@ -164,4 +164,48 @@ module.exports.getSearchResult = async(req, res) => {
 
         console.log(result)
     }
+}
+
+module.exports.postUpdateProduct = async(req, res) => {
+    var update = new Object({ _id: req.body.productId })
+
+    try {
+        if (req.body.quantity) {
+            update = await Object.assign(update, { quantity: req.body.quantity })
+        }
+        if (req.body.price) {
+            update = await Object.assign(update, { price: req.body.price })
+        }
+        if (req.body.name) {
+            update = await Object.assign(update, { name: req.body.name })
+        }
+        if (req.body.category) {
+            update = await Object.assign(update, { category: req.body.category })
+        }
+        if (req.body.description) {
+            update = await Object.assign(update, { description: req.body.description })
+        }
+    } catch (err) {
+        console.log(err)
+    }
+    
+    console.log(update)
+
+    const product = await Product.updateOne( {_id: req.body.productId}, update, { new: true } )
+    console.log(product)
+
+    res.json({
+        success: true,
+        message: "updated"
+    })
+}
+
+module.exports.deleteProduct = async(req, res) => {
+    var before = await Product.findOneAndDelete({ _id: req.params.id })
+    console.log(before)
+
+    res.json({
+        success: true,
+        message: "deleted"
+    })
 }

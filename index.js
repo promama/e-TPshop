@@ -25,7 +25,7 @@ mongoose.connect("mongodb+srv://Phuc:Phuc123@cluster0.qeoyr.mongodb.net/e-tpshop
     useFindAndModify: false,
 });
 
-//hello world api
+//base api for secret token
 app.get('/', function (req, res) {
   res.send(process.env.ACCESS_TOKEN_SECRET);
 });
