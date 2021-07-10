@@ -7,8 +7,10 @@ router.post('/register', userController.postRegister)
 router.get('/getall', userController.getallUser)
 router.post('/login', userController.postlogin)
 
+router.post('/googlelogin', userController.postLoginGoogle)
+
 router.use(authController.verifyToken)
 router.post('/update', userController.postUpdate)
-router.delete('/:id', userController.deleteUser)
+router.delete('/:id', authController.checkAdmin, userController.deleteUser)
 
 module.exports = router

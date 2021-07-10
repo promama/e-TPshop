@@ -5,6 +5,9 @@ const Cart = require("../models/carts")
 const mongoose = require("mongoose")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const {OAuth2Client} = require('google-auth-library')
+
+const client = new OAuth2Client("597253275414-4a1k1im1uha1jgrvr3ai6ckeriffh1f6.apps.googleusercontent.com")
 
 const auth = require('./auth.controller')
 
@@ -215,6 +218,58 @@ module.exports.postUpdate = async (req, res) => {
         res.json({
             success: true,
             message: "update successed"
+        })
+    }
+}
+
+module.exports.postLoginGoogle = async (req, res) => {
+    const tokenId = req.body.tokenId
+
+    response = await client.verifyIdToken({ idToken: tokenId, audience: "597253275414-4a1k1im1uha1jgrvr3ai6ckeriffh1f6.apps.googleusercontent.com" })
+    console.log(response.payload)
+
+    if (response.payload.email_verified) {
+        console.log("verified")
+        const user = await User.findOne({ email: response.payload.email })
+        console.log(user)
+
+        if (user) {
+            console.log("vo if")
+
+            const token = await jwt.sign({ _id: user._id, role: user.role, username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "300s" })
+
+            res.json({
+                token
+            })
+        } else {
+            console.log("vo else")
+
+            const newUser = new User({
+                _id: new mongoose.Types.ObjectId(),
+                email: response.payload.email,
+                username: response.payload.email,
+                password: "a"
+            })
+
+            const cart = new Cart({
+                _id: new mongoose.Types.ObjectId(),
+                userId: newUser._id
+            })
+
+            const token = await jwt.sign({ _id: newUser._id, role: newUser.role, username: newUser.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "300s" })
+
+            await newUser.save()
+            await cart.save()
+
+            res.json({
+                token
+            })
+        }
+    } else {
+        console.log("not verified")
+        res.json({
+            success: false,
+            message: "google not authorize"
         })
     }
 }

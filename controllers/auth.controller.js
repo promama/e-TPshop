@@ -78,3 +78,20 @@ module.exports.checkingRole = async (req, res, next) => {
         })
     }
 }
+
+module.exports.checkAdmin = async (req, res, next) => {
+    const authHeader = req.headers['authorization']
+    //check if it have authHeader => token = undefined or token
+    const token = authHeader && authHeader.split(' ')[1]
+
+    user = await this.decrypt(token)
+    console.log(user)
+
+    if (user.role == "admin") {
+        next()
+    } else {
+        return res.json({
+            message: "no authorize"
+        })
+    }
+}
