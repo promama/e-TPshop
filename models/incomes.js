@@ -1,12 +1,10 @@
 const mongoose = require('mongoose')
 
 var incomeSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users"
-    },
+    Id: { type: mongoose.Schema.Types.ObjectId },
     total: { type: Number, default: 0 },
-    create_at: { type: Date, default: Date.now }
+    year: { type: Number },
+    month: { type: Number }
 })
 
 var Income = mongoose.model("Incomes", incomeSchema, "incomes")

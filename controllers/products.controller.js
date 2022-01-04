@@ -28,14 +28,6 @@ module.exports.postCreateProduct = async(req, res) => {
     })
 }
 
-module.exports.postUploadImage = async(req, res) => {
-    console.log(req.body)
-
-    res.json({
-        message: "ok"
-    })
-}
-
 //find all products
 module.exports.getallProduct = async(req, res) => {
 
@@ -233,8 +225,4 @@ module.exports.deleteProduct = async(req, res) => {
         success: true,
         message: "deleted"
     })
-}
-
-module.exports.downloadImgProduct = async(req, res) => {
-    
 }

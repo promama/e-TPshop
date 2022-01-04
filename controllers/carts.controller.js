@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 var auth = require("../controllers/auth.controller")
 var user = require("../controllers/users.controller")
 const { json } = require("body-parser")
+const Income = require("../models/incomes")
 
 module.exports.postCreateCart = (req, res) => {
     var cart = new Cart({
@@ -242,7 +243,7 @@ module.exports.getAllCart = async (req, res) => {
     var userId = await auth.decrypt(token)
     console.log("user id: %j", userId._id)
 
-    var cart = await Cart.find({ userId: userId._id })
+    var cart = await Cart.find({ userId: userId._id }).select("-_id -userId -__v -products._id")
     console.log("cart: " + cart)
 
     res.json({
@@ -271,13 +272,48 @@ module.exports.purchase = async (req, res) => {
 
     var update = cart[0]
 
+    //get current month and year
+    var currentTime = new Date()
+    var currentMonth = currentTime.getMonth() + 1
+    var currentYear = currentTime.getFullYear()
+
+    //update to incomes table
+    var query = { year: currentYear, month: currentMonth }
+    var option = { upsert: true, new: true, setDefaultsOnInsert: true }
+
+    var income = await Income.find({query})
+
+    var total = 0
+
+    console.log(income[0])
+    if (income[0] != undefined) {
+        total = income[0].total + update.total
+    }
+    var update2 = { total: total + update.total }
+
+    await Income.findOneAndUpdate(query, update2, option)
+
     const history = new History({
         _id: new mongoose.Types.ObjectId(),
-        userId: user._id,
+        userId: userId._id,
         total: update.total,
         status: "bought",
         products: update.products
     })
 
-    history.save()
+    history
+        .save()
+        .then(result => {
+            console.log(result)
+            res.status(201).json({
+                success: true,
+                message: 'create history success!'
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                success: false,
+                message: err
+            })
+        })
 }
