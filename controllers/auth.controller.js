@@ -39,7 +39,6 @@ module.exports.roleCheck = async (req, res, next) => {
             message: "no author"
         })
     } else if (user.role == "shop" || user.role == "admin") {
-        req.mid.role = user.role
         next()
     } else {
         return res.json({
@@ -92,6 +91,23 @@ module.exports.checkAdmin = async (req, res, next) => {
     } else {
         return res.json({
             message: "no authorize"
+        })
+    }
+}
+
+module.exports.checkUser = async (req, res, next) => {
+    const authHeader = req.headers['authorization']
+    //check if it have authHeader => token = undefined or token
+    const token = authHeader && authHeader.split(' ')[1]
+
+    user = await this.decrypt(token)
+    console.log(user)
+
+    if (user.role == "user") {
+        next()
+    } else {
+        return res.json({
+            message: "no role"
         })
     }
 }

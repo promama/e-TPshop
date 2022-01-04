@@ -50,13 +50,13 @@ function createCart() {
 
 async function addtocart(product, userId, quantity) {
     var filter = { userId: userId }
-    console.log("filter: " + filter)
+    //console.log("filter: " + filter)
 
     const update = { _id: product._id , quantity: quantity, price: product.price, name: product.name, status: "waiting approve"}
-    console.log("update value: %j", update)
+    //console.log("update value: %j", update)
 
     total_add = product.price * quantity
-    console.log("amount add to cart: " + total_add)
+    //console.log("amount add to cart: " + total_add)
 
     try {
         var products = await Cart.find(filter)
@@ -233,10 +233,32 @@ module.exports.postRemoveFromUserCart = async (req, res) => {
 }
 
 module.exports.getAllCart = async (req, res) => {
-    //req.mid.role
-    if (req.mid.role == "user") {
-        var cart = Cart.find({ _id: req.mid._id })
+    const authHeader = req.headers['authorization']
+    //check if it have authHeader => token = undefined or token
+    const token = authHeader && authHeader.split(' ')[1]
 
-        console.log(cart)
-    }
+    //taking user id from token 
+    var userId = await auth.decrypt(token)
+    console.log("user id: %j", userId._id)
+
+    var cart = await Cart.find({ userId: userId._id })
+    console.log("cart: " + cart)
+
+    res.json({
+        success: true,
+        data: cart
+    })
+}
+
+module.exports.purchase = async (req, res) => {
+    const authHeader = req.headers['authorization']
+    //check if it have authHeader => token = undefined or token
+    const token = authHeader && authHeader.split(' ')[1]
+
+    //taking user id from token 
+    var userId = await auth.decrypt(token)
+    console.log("user id: %j", userId._id)
+
+    var cart = await Cart.find({ userId: userId._id })
+    console.log("cart: " + cart)
 }

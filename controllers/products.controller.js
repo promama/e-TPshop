@@ -4,6 +4,13 @@ var Product = require("../models/products")
 const { search } = require("../routers/products.router")
 const { where, findOneAndDelete } = require("../models/products")
 
+var cloudinary = require('cloudinary').v2
+cloudinary.config({
+    cloud_name: 'promama',
+    api_key: '139334147171543',
+    api_secret: 'craJetrhtFoPh_lDK7xrV_ImYA0'
+})
+
 //create account
 module.exports.postCreateProduct = async(req, res) => {
     //create product with request from body
@@ -18,6 +25,14 @@ module.exports.postCreateProduct = async(req, res) => {
     res.status(201).json({
         success: true,
         data: product
+    })
+}
+
+module.exports.postUploadImage = async(req, res) => {
+    console.log(req.body)
+
+    res.json({
+        message: "ok"
     })
 }
 
@@ -133,36 +148,42 @@ module.exports.getallProduct = async(req, res) => {
 
 //create account
 module.exports.getSearchResult = async(req, res) => {
-    // //create product with request from body
-    // try {
-    //     var product = await Product.create( {name: req.body.name, category: req.body.category, brand: req.body.brand, description: req.body.description, price: req.body.price})
-    //     await product.save()
-    // } catch {
-    //     console.log("we have problem")
-    // }
+    if (req.body.brand) {
+        const result = await Product.find({}, {"_id": 0, "brand": 1})
 
-    // //return value
-    // res.status(201).json({
-    //     success: true,
-    //     data: product
-    // })
+        const seen = new Set()
+        const filteredArr = result.filter(el => {
+            const duplicate = seen.has(el.brand);
+            seen.add(el.brand);
+            return !duplicate;
+        });
 
-    if (req.body.target) {
-        const result = await Product.find({name: { $regex: req.body.target, $options: "i" }}).exec().then(products => {
-            if (products.length == 0) {
-                res.json({
-                    success: false,
-                    message: "no product found"
-                })
-            } else {
-                res.json({
-                    success: true,
-                    data: products
-                })
-            }
+        let newArray = new Array()
+        for (let i = 0; i < filteredArr.length; i++) {
+            newArray.push(filteredArr[i].brand)
+        }
+
+        res.json({
+            brand: newArray
+        })
+    } else if (req.body.category) {
+        const result = await Product.find({}, {"_id": 0, "category": 1})
+
+        const seen = new Set()
+        const filteredArr = result.filter(el => {
+            const duplicate = seen.has(el.category);
+            seen.add(el.category);
+            return !duplicate;
         })
 
-        console.log(result)
+        let newArray = new Array()
+        for (let i = 0; i < filteredArr.length; i++) {
+            newArray.push(filteredArr[i].category)
+        }
+
+        res.json({
+            category: newArray
+        })
     }
 }
 
@@ -212,4 +233,8 @@ module.exports.deleteProduct = async(req, res) => {
         success: true,
         message: "deleted"
     })
+}
+
+module.exports.downloadImgProduct = async(req, res) => {
+    
 }
