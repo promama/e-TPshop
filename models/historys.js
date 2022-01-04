@@ -11,11 +11,11 @@ var historySchema = new mongoose.Schema({
         quantity: { type: Number },
         price: { type: Number },
         name: { type: String },
-        status: { type: String },
-        modify_date: { type: Date, default: Date.now }
+        url: { type: String }
         }
     ],
     total: { type: Number, default: 0 },
+    status: { type: String, default: "bought"},
     create_at: { type: Date, default: Date.now }
 })
 

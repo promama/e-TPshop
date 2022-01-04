@@ -15,7 +15,7 @@ cloudinary.config({
 module.exports.postCreateProduct = async(req, res) => {
     //create product with request from body
     try {
-        var product = await Product.create( {name: req.body.name, category: req.body.category, brand: req.body.brand, description: req.body.description, price: req.body.price})
+        var product = await Product.create( { url:req.body.url, name: req.body.name, category: req.body.category, brand: req.body.brand, description: req.body.description, price: req.body.price})
         await product.save()
     } catch {
         console.log("we have problem")

@@ -11,6 +11,7 @@ var cartSchema = new mongoose.Schema({
         quantity: { type: Number },
         price: { type: Number },
         name: { type: String, ref: "products" },
+        url: { type: String },
         status: { type: String },
         modify_date: { type: Date, default: Date.now }
         }

@@ -1,6 +1,7 @@
 var User = require("../models/users")
 var Cart = require("../models/carts")
 var Product = require("../models/products")
+var History = require("../models/historys")
 const mongoose = require("mongoose")
 const jwt = require('jsonwebtoken')
 var auth = require("../controllers/auth.controller")
@@ -52,7 +53,7 @@ async function addtocart(product, userId, quantity) {
     var filter = { userId: userId }
     //console.log("filter: " + filter)
 
-    const update = { _id: product._id , quantity: quantity, price: product.price, name: product.name, status: "waiting approve"}
+    const update = { _id: product._id , quantity: quantity, price: product.price, name: product.name, status: "waiting approve", url: product.url}
     //console.log("update value: %j", update)
 
     total_add = product.price * quantity
@@ -259,6 +260,24 @@ module.exports.purchase = async (req, res) => {
     var userId = await auth.decrypt(token)
     console.log("user id: %j", userId._id)
 
+    //get cart infos
     var cart = await Cart.find({ userId: userId._id })
-    console.log("cart: " + cart)
+    console.log("cart: " + cart[0].products)
+
+    //all from cart
+    await Cart.updateMany({ userId: userId._id, total: { $gte: 0 } }, { $pull: { products: { } }, $set: { total: 0 } })
+
+    console.log(cart[0])
+
+    var update = cart[0]
+
+    const history = new History({
+        _id: new mongoose.Types.ObjectId(),
+        userId: user._id,
+        total: update.total,
+        status: "bought",
+        products: update.products
+    })
+
+    history.save()
 }
